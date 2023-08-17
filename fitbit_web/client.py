@@ -67,8 +67,9 @@ class Client(api.FitbitWebApi):
         try:
             yield self
         finally:
-            await self.__session.close()
-            self.__session = None
+            if self.__session is not None and not self.__session.closed:
+                await self.__session.close()
+                self.__session = None
 
     async def _aget(
         self,
