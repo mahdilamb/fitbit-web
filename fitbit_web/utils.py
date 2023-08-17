@@ -1,5 +1,6 @@
 """Utility functions for the Web client."""
 import datetime
+import urllib.parse
 from typing import Annotated, Any, Literal
 
 
@@ -48,6 +49,21 @@ def format_date_or_timestamp(
         return format_date(date_or_timestamp)
 
 
+def format_url(
+    url: str,
+    param_kwargs: dict[str, Any] | None = None,
+    query_kwargs: dict[str, Any] | None = None,
+):
+    """Format the url."""
+    if not url.startswith("http"):
+        url = "https://api.fitbit.com/" + url.lstrip("/")
+    url = url.format(**filter_dict(param_kwargs))
+    if query_kwargs:
+        url += "?" + urllib.parse.urlencode(filter_dict(query_kwargs))
+    return url
+
+
 def filter_dict(dictionary: dict[str, Any | None] | None) -> dict[str, Any]:
     """Remove `None` values from a dictionary."""
     return {k: v for k, v in (dictionary or {}).items() if v is not None}
+
