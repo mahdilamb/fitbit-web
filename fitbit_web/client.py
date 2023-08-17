@@ -60,4 +60,3 @@ class Client(api.FitbitWebApi):
         if response.status_code != 200:
             raise Exception(response.text)
         return response.json()
-
