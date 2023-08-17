@@ -66,4 +66,3 @@ def format_url(
 def filter_dict(dictionary: dict[str, Any | None] | None) -> dict[str, Any]:
     """Remove `None` values from a dictionary."""
     return {k: v for k, v in (dictionary or {}).items() if v is not None}
-

@@ -9,7 +9,7 @@ import typing
 import urllib.parse
 import webbrowser
 from http import server
-from typing import Literal, Sequence
+from typing import Literal, Sequence, cast
 
 import requests
 from dotenv import load_dotenv
@@ -27,11 +27,6 @@ CLIENT_SECRET = os.getenv("FITBIT_CLIENT_SECRET", None)
 REDIRECT_URL = os.getenv("FITBIT_REDIRECT_URL", None)
 
 CODE_VERIFIER = secrets.token_urlsafe(96)
-CODE_CHALLENGE: str = (
-    base64.urlsafe_b64encode(hashlib.sha256(CODE_VERIFIER.encode("utf-8")).digest())
-    .decode("utf-8")
-    .rstrip("=")
-)
 
 
 Scope = Literal[
@@ -87,7 +82,48 @@ def check_secrets():
         )
 
 
-def get_tokens_local(scopes: Sequence[Scope] = typing.get_args(Scope), auto_open:bool=True) -> AuthTokens:
+def code_challenge(code_verifier: str = CODE_VERIFIER) -> str:
+    """Hash the code verifier."""
+    return (
+        base64.urlsafe_b64encode(hashlib.sha256(code_verifier.encode("utf-8")).digest())
+        .decode("utf-8")
+        .rstrip("=")
+    )
+
+
+def get_oauth2_url(
+    scopes: Sequence[Scope] = typing.get_args(Scope), code_verifier: str = CODE_VERIFIER
+):
+    """Get the OAuth2 url."""
+    check_secrets()
+
+    return f"https://www.fitbit.com/oauth2/authorize?response_type=code&client_id={CLIENT_ID}&code_challenge={code_challenge(code_verifier)}&code_challenge_method=S256&scope={('+'.join(scopes))}&redirect_uri={urllib.parse.quote(REDIRECT_URL)}"
+
+
+def token_from_code(code: str, code_verifier: str = CODE_VERIFIER) -> AuthTokens:
+    """Get a token from the code returned from the authorization process.
+
+    Note that the code_verified must be hashed as in the original process.
+    """
+    response = requests.post(
+        f"https://api.fitbit.com/oauth2/token?client_id={CLIENT_ID}&code={code}&code_verifier={code_verifier}&grant_type=authorization_code&redirect_uri={urllib.parse.quote(REDIRECT_URL)}",
+        headers={
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": f"Basic {base64.urlsafe_b64encode(f'{CLIENT_ID}:{CLIENT_SECRET}'.encode('utf-8')).decode('utf-8')}",
+            "Accept": "application/json",
+        },
+        timeout=2.0,
+    ).json()
+    response["scope"] = tuple(w.strip() for w in response["scope"].split())
+
+    return AuthTokens(**response)
+
+
+def get_tokens_local(
+    scopes: Sequence[Scope] = typing.get_args(Scope),
+    auto_open: bool = True,
+    code_verifier: str = CODE_VERIFIER,
+) -> AuthTokens:
     """Get the auth token using the secrets in the constants.
 
     Parameters
@@ -108,7 +144,7 @@ def get_tokens_local(scopes: Sequence[Scope] = typing.get_args(Scope), auto_open
         If redirect is not to localhost.
     """
     check_secrets()
-    oauth2_url = get_oauth2_url(scopes)
+    oauth2_url = get_oauth2_url(scopes, code_verifier=code_verifier)
     if auto_open:
         webbrowser.open(oauth2_url)
     print(f"Authorize Fitbit usage: {oauth2_url}")
@@ -134,8 +170,8 @@ def get_tokens_local(scopes: Sequence[Scope] = typing.get_args(Scope), auto_open
                 self.send_header("Content-type", "text/html")
                 self.end_headers()
                 self.wfile.write(
-                    bytes(\
-"""<html>
+                    bytes(
+                        """<html>
     <head>
         
     </head>
@@ -160,22 +196,4 @@ def get_tokens_local(scopes: Sequence[Scope] = typing.get_args(Scope), auto_open
 
     tmp_server = server.HTTPServer((address, int(port)), AuthClient)
     tmp_server.serve_forever()
-    response = requests.post(
-        f"https://api.fitbit.com/oauth2/token?client_id={CLIENT_ID}&code={code}&code_verifier={CODE_VERIFIER}&grant_type=authorization_code&redirect_uri={urllib.parse.quote(REDIRECT_URL)}",
-        headers={
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Authorization": f"Basic {base64.urlsafe_b64encode(f'{CLIENT_ID}:{CLIENT_SECRET}'.encode('utf-8')).decode('utf-8')}",
-            "Accept": "application/json",
-        },
-        timeout=2.0,
-    ).json()
-    response["scope"] = tuple(w.strip() for w in response["scope"].split())
-
-    return AuthTokens(**response)
-
-
-def get_oauth2_url(scopes: Sequence[Scope] = typing.get_args(Scope)):
-    """Get the OAuth2 url."""
-    check_secrets()
-
-    return f"https://www.fitbit.com/oauth2/authorize?response_type=code&client_id={CLIENT_ID}&code_challenge={CODE_CHALLENGE}&code_challenge_method=S256&scope={('+'.join(scopes))}&redirect_uri={urllib.parse.quote(REDIRECT_URL)}"
+    return token_from_code(cast(str, code), code_verifier=code_verifier)
