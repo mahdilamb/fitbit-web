@@ -10,6 +10,7 @@ authors = [{name = "Mahdi Lamb", email = "mahdilamb@gmail.com"}]
 dependencies = [
   "python-dotenv",
   "requests",
+  "aiohttp",
 ]
 
 [project.optional-dependencies]

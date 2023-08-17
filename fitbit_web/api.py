@@ -18,6 +18,15 @@ class FitbitWebApi(abc.ABC):
     ) -> dict[str, Any]:
         ...
 
+    @abc.abstractmethod
+    async def _aget(
+        self,
+        url: str,
+        param_kwargs: dict[str, Any] | None = None,
+        query_kwargs: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        ...
+
     def get_azm_by_date_intraday(
         self,
         date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
@@ -2077,3 +2086,2067 @@ class FitbitWebApi(abc.ABC):
         Scopes: ['location', 'profile', 'weight']
         """
         return self._get("/1/user/-/profile.json")
+
+    async def aget_azm_by_date_intraday(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        detail_level: Literal["1min", "5min", "15min"],
+    ):
+        """Get AZM Intraday by Date.
+
+        Returns the active zone minutes intraday data for a 24 hour period by specifying a date and/or time range.
+
+        Endpoint: '/1/user/-/activities/active-zone-minutes/date/{date}/1d/{detail-level}.json'
+        Scopes: ['activity']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd or today
+
+        detail_level : Literal['1min', '5min', '15min']
+                The detail for which data will be returned. **Supported:** 1min | 5min | 15min
+        """
+        return await self._aget(
+            "/1/user/-/activities/active-zone-minutes/date/{date}/1d/{detail-level}.json",
+            param_kwargs={
+                "date": utils.format_date(date),
+                "detail-level": detail_level,
+            },
+        )
+
+    async def aget_azm_by_date_time_series_intraday(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        detail_level: Literal["1min", "5min", "15min"],
+        start_time: Union[datetime.time, Annotated[str, "HH:mm"]],
+        end_time: Union[datetime.time, Annotated[str, "HH:mm"]],
+    ):
+        """Get AZM Intraday by Date.
+
+        Returns the active zone minutes intraday data for a 24 hour period by specifying a date and/or time range.
+
+        Endpoint: '/1/user/-/activities/active-zone-minutes/date/{date}/1d/{detail-level}/time/{start-time}/{end-time}.json'
+        Scopes: ['activity']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd or today
+
+        detail_level : Literal['1min', '5min', '15min']
+                The detail for which data will be returned. **Supported:** 1min | 5min | 15min
+
+        start_time : Union[datetime.time, Annotated[str, 'HH:mm']]
+                The start of the period in the format HH:mm.
+
+        end_time : Union[datetime.time, Annotated[str, 'HH:mm']]
+                The end of the period in the format HH:mm.
+        """
+        return await self._aget(
+            "/1/user/-/activities/active-zone-minutes/date/{date}/1d/{detail-level}/time/{start-time}/{end-time}.json",
+            param_kwargs={
+                "date": utils.format_date(date),
+                "detail-level": detail_level,
+                "start-time": utils.format_time(start_time),
+                "end-time": utils.format_time(end_time),
+            },
+        )
+
+    async def aget_azm_by_interval_intraday(
+        self,
+        start_date: Union[
+            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
+        ],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        detail_level: Literal["1min", "5min", "15min"],
+    ):
+        """Get AZM Intraday by Interval.
+
+        Returns the active zone minutes intraday data for a 24 hour period by specifying a date range and/or time range.
+
+        Endpoint: '/1/user/-/activities/active-zone-minutes/date/{start-date}/{end-date}/{detail-level}.json'
+        Scopes: ['activity']
+
+        Parameters
+        ----------
+        start_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd or today
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd or today
+
+        detail_level : Literal['1min', '5min', '15min']
+                The detail for which data will be returned. **Support:** 1min | 5min | 15min
+        """
+        return await self._aget(
+            "/1/user/-/activities/active-zone-minutes/date/{start-date}/{end-date}/{detail-level}.json",
+            param_kwargs={
+                "start-date": utils.format_date(start_date),
+                "end-date": utils.format_date(end_date),
+                "detail-level": detail_level,
+            },
+        )
+
+    async def aget_azm_by_interval_time_series_intraday(
+        self,
+        start_date: Union[
+            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
+        ],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        detail_level: Literal["1min", "5min", "15min"],
+        start_time: Union[datetime.time, Annotated[str, "HH:mm"]],
+        end_time: Union[datetime.time, Annotated[str, "HH:mm"]],
+    ):
+        """Get AZM Intraday by Interval.
+
+        Returns the active zone minutes intraday data for a 24 hour period by specifying a date range and/or time range.
+
+        Endpoint: '/1/user/-/activities/active-zone-minutes/date/{start-date}/{end-date}/time/{start-time}/{end-time}.json'
+        Scopes: ['activity']
+
+        Parameters
+        ----------
+        start_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd or today
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd or today
+
+        detail_level : Literal['1min', '5min', '15min']
+                The detail for which data will be returned. **Support:** 1min | 5min | 15min
+
+        start_time : Union[datetime.time, Annotated[str, 'HH:mm']]
+                The start of the period in the format HH:mm.
+
+        end_time : Union[datetime.time, Annotated[str, 'HH:mm']]
+                The end of the period in the format HH:mm.
+        """
+        return await self._aget(
+            "/1/user/-/activities/active-zone-minutes/date/{start-date}/{end-date}/time/{start-time}/{end-time}.json",
+            param_kwargs={
+                "start-date": utils.format_date(start_date),
+                "end-date": utils.format_date(end_date),
+                "detail-level": detail_level,
+                "start-time": utils.format_time(start_time),
+                "end-time": utils.format_time(end_time),
+            },
+        )
+
+    async def aget_azm_time_series_by_date(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        period: Literal["1d", "7d", "30d", "1w", "1m", "3m", "6m", "1y"],
+    ):
+        """Get AZM Time Series by Date.
+
+        Returns the daily summary values over a period of time by specifying a date and time period.
+
+        Endpoint: '/1/user/-/activities/active-zone-minutes/date/{date}/{period}.json'
+        Scopes: ['activity']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd or today
+
+        period : Literal['1d', '7d', '30d', '1w', '1m', '3m', '6m', '1y']
+                The range for which data will be returned. **Supported:** 1d | 7d | 30d | 1w | 1m | 3m | 6m | 1y
+        """
+        return await self._aget(
+            "/1/user/-/activities/active-zone-minutes/date/{date}/{period}.json",
+            param_kwargs={"date": utils.format_date(date), "period": period},
+        )
+
+    async def aget_azm_time_series_by_interval(
+        self,
+        start_date: Union[
+            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
+        ],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+    ):
+        """Get AZM Time Series by Interval.
+
+        Returns the daily summary values over an interval by specifying a date range.
+
+        Endpoint: '/1/user/-/activities/active-zone-minutes/date/{start-date}/{end-date}.json'
+        Scopes: ['activity']
+
+        Parameters
+        ----------
+        start_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd or today
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd or today
+        """
+        return await self._aget(
+            "/1/user/-/activities/active-zone-minutes/date/{start-date}/{end-date}.json",
+            param_kwargs={
+                "start-date": utils.format_date(start_date),
+                "end-date": utils.format_date(end_date),
+            },
+        )
+
+    async def aget_activities_by_date(
+        self, date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+    ):
+        """Get Activity Summary by Date.
+
+        Retrieves a summary and list of a user's activities and activity log entries for a given day.
+
+        Endpoint: '/1/user/-/activities/date/{date}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd
+        """
+        return await self._aget(
+            "/1/user/-/activities/date/{date}.json",
+            param_kwargs={"date": utils.format_date(date)},
+        )
+
+    async def aget_activities_resource_by_date_range(
+        self,
+        base_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        resource_path: Literal[
+            "calories",
+            "caloriesBMR",
+            "steps",
+            "distance",
+            "floors",
+            "elevation",
+            "minutesSedentary",
+            "minutesLightlyActive",
+            "minutesFairlyActive",
+            "minutesVeryActive",
+            "activityCalories",
+        ] = "steps",
+    ):
+        """Get Activity Resource by Date Range.
+
+        Returns activities time series data in the specified range for a given resource.
+
+        Endpoint: '/1/user/-/activities/{resource-path}/date/{base-date}/{end-date}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        base_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The range start date in the format yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The end date of the range.
+
+        resource_path : Literal['calories', 'caloriesBMR', 'steps', 'distance', 'floors', 'elevation', 'minutesSedentary', 'minutesLightlyActive', 'minutesFairlyActive', 'minutesVeryActive', 'activityCalories']
+                The resource-path; see options in the Resource Path Options section in the full documentation.
+        """
+        return await self._aget(
+            "/1/user/-/activities/{resource-path}/date/{base-date}/{end-date}.json",
+            param_kwargs={
+                "base-date": utils.format_date(base_date),
+                "end-date": utils.format_date(end_date),
+                "resource-path": resource_path,
+            },
+        )
+
+    async def aget_activities_tracker_resource_by_date_range(
+        self,
+        base_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        resource_path: Literal[
+            "calories",
+            "caloriesBMR",
+            "steps",
+            "distance",
+            "floors",
+            "elevation",
+            "minutesSedentary",
+            "minutesLightlyActive",
+            "minutesFairlyActive",
+            "minutesVeryActive",
+            "activityCalories",
+        ] = "steps",
+    ):
+        """Get Activity Tracker Resource by Date Range Time Series.
+
+        Returns time series data in the specified range for a given resource.
+
+        Endpoint: '/1/user/-/activities/tracker/{resource-path}/date/{base-date}/{end-date}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        base_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The range start date in the format yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The end date of the range.
+
+        resource_path : Literal['calories', 'caloriesBMR', 'steps', 'distance', 'floors', 'elevation', 'minutesSedentary', 'minutesLightlyActive', 'minutesFairlyActive', 'minutesVeryActive', 'activityCalories']
+                The resource-path; see options in the Resource Path Options section in the full documentation.
+        """
+        return await self._aget(
+            "/1/user/-/activities/tracker/{resource-path}/date/{base-date}/{end-date}.json",
+            param_kwargs={
+                "base-date": utils.format_date(base_date),
+                "end-date": utils.format_date(end_date),
+                "resource-path": resource_path,
+            },
+        )
+
+    async def aget_activities_resource_by_date_period(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        period: Literal["1d", "7d", "30d", "1w", "1m", "3m", "6m", "1y", "max"],
+        resource_path: Literal[
+            "calories",
+            "caloriesBMR",
+            "steps",
+            "distance",
+            "floors",
+            "elevation",
+            "minutesSedentary",
+            "minutesLightlyActive",
+            "minutesFairlyActive",
+            "minutesVeryActive",
+            "activityCalories",
+        ] = "steps",
+    ):
+        """Get Activity Time Series.
+
+        Returns time series data in the specified range for a given resource in the format requested using units in the unit system that corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1/user/-/activities/{resource-path}/date/{date}/{period}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The end date of the period specified in the format yyyy-MM-dd or today.
+
+        period : Literal['1d', '7d', '30d', '1w', '1m', '3m', '6m', '1y', 'max']
+                The range for which data will be returned. Options are 1d, 7d, 30d, 1w, 1m, 3m, 6m, 1y, or max.
+
+        resource_path : Literal['calories', 'caloriesBMR', 'steps', 'distance', 'floors', 'elevation', 'minutesSedentary', 'minutesLightlyActive', 'minutesFairlyActive', 'minutesVeryActive', 'activityCalories']
+                The resource-path; see options in the Resource Path Options section in the full documentation.
+        """
+        return await self._aget(
+            "/1/user/-/activities/{resource-path}/date/{date}/{period}.json",
+            param_kwargs={
+                "date": utils.format_date(date),
+                "period": period,
+                "resource-path": resource_path,
+            },
+        )
+
+    async def aget_activities_tracker_resource_by_date_period(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        period: Literal["1d", "7d", "30d", "1w", "1m", "3m", "6m", "1y", "max"],
+        resource_path: Literal[
+            "calories",
+            "caloriesBMR",
+            "steps",
+            "distance",
+            "floors",
+            "elevation",
+            "minutesSedentary",
+            "minutesLightlyActive",
+            "minutesFairlyActive",
+            "minutesVeryActive",
+            "activityCalories",
+        ] = "steps",
+    ):
+        """Get Activity Time Series.
+
+        Returns time series data in the specified range for a given resource in the format requested using units in the unit system that corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1/user/-/activities/tracker/{resource-path}/date/{date}/{period}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The end date of the period specified in the format yyyy-MM-dd or today.
+
+        period : Literal['1d', '7d', '30d', '1w', '1m', '3m', '6m', '1y', 'max']
+                The range for which data will be returned. Options are 1d, 7d, 30d, 1w, 1m, 3m, 6m, 1y, or max.
+
+        resource_path : Literal['calories', 'caloriesBMR', 'steps', 'distance', 'floors', 'elevation', 'minutesSedentary', 'minutesLightlyActive', 'minutesFairlyActive', 'minutesVeryActive', 'activityCalories']
+                The resource-path; see options in the Resource Path Options section in the full documentation.
+        """
+        return await self._aget(
+            "/1/user/-/activities/tracker/{resource-path}/date/{date}/{period}.json",
+            param_kwargs={
+                "date": utils.format_date(date),
+                "period": period,
+                "resource-path": resource_path,
+            },
+        )
+
+    async def aget_activities_resource_by_date_range_intraday(
+        self,
+        base_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        resource_path: Literal[
+            "calories", "steps", "distance", "floors", "elevation"
+        ] = "steps",
+        detail_level: Literal["1min", "15min"] = "1min",
+    ):
+        """Get Activity Intraday Time Series.
+
+        Returns the Activity Intraday Time Series for a given resource in the format requested.
+
+        Endpoint: '/1/user/-/activities/{resource-path}/date/{base-date}/{end-date}/{detail-level}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        base_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd or today.
+
+        resource_path : Literal['calories', 'steps', 'distance', 'floors', 'elevation']
+                The resource-path; see options in the Resource Path Options section in the full documentation.
+
+        detail_level : Literal['1min', '15min']
+                Number of data points to include. Either 1min or 15min. Optional.
+        """
+        return await self._aget(
+            "/1/user/-/activities/{resource-path}/date/{base-date}/{end-date}/{detail-level}.json",
+            param_kwargs={
+                "base-date": utils.format_date(base_date),
+                "end-date": utils.format_date(end_date),
+                "resource-path": resource_path,
+                "detail-level": detail_level,
+            },
+        )
+
+    async def aget_activities_resource_by_date_intraday(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        resource_path: Literal[
+            "calories", "steps", "distance", "floors", "elevation"
+        ] = "steps",
+        detail_level: Literal["1min", "15min"] = "1min",
+    ):
+        """Get Intraday Time Series.
+
+        Returns the Intraday Time Series for a given resource in the format requested.
+
+        Endpoint: '/1/user/-/activities/{resource-path}/date/{date}/1d/{detail-level}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd or today.
+
+        resource_path : Literal['calories', 'steps', 'distance', 'floors', 'elevation']
+                The resource-path; see options in the Resource Path Options section in the full documentation.
+
+        detail_level : Literal['1min', '15min']
+                Number of data points to include. Either 1min or 15min. Optional.
+        """
+        return await self._aget(
+            "/1/user/-/activities/{resource-path}/date/{date}/1d/{detail-level}.json",
+            param_kwargs={
+                "date": utils.format_date(date),
+                "resource-path": resource_path,
+                "detail-level": detail_level,
+            },
+        )
+
+    async def aget_activities_resource_by_date_range_time_series_intraday(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        start_time: Union[datetime.time, Annotated[str, "HH:mm"]],
+        end_time: Union[datetime.time, Annotated[str, "HH:mm"]],
+        resource_path: Literal[
+            "calories", "steps", "distance", "floors", "elevation"
+        ] = "steps",
+        detail_level: Literal["1min", "15min"] = "1min",
+    ):
+        """Get Activity Intraday Time Series.
+
+        Returns the Intraday Time Series for a given resource in the format requested.
+
+        Endpoint: '/1/user/-/activities/{resource-path}/date/{date}/{end-date}/{detail-level}/time/{start-time}/{end-time}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd or today.
+
+        start_time : Union[datetime.time, Annotated[str, 'HH:mm']]
+                The start of the period in the format HH:mm.
+
+        end_time : Union[datetime.time, Annotated[str, 'HH:mm']]
+                The end of the period in the format HH:mm.
+
+        resource_path : Literal['calories', 'steps', 'distance', 'floors', 'elevation']
+                The resource-path; see options in the Resource Path Options section in the full documentation.
+
+        detail_level : Literal['1min', '15min']
+                Number of data points to include. Either 1min or 15min.
+        """
+        return await self._aget(
+            "/1/user/-/activities/{resource-path}/date/{date}/{end-date}/{detail-level}/time/{start-time}/{end-time}.json",
+            param_kwargs={
+                "date": utils.format_date(date),
+                "end-date": utils.format_date(end_date),
+                "start-time": utils.format_time(start_time),
+                "end-time": utils.format_time(end_time),
+                "resource-path": resource_path,
+                "detail-level": detail_level,
+            },
+        )
+
+    async def aget_activities_resource_by_date_time_series_intraday(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        start_time: Union[datetime.time, Annotated[str, "HH:mm"]],
+        end_time: Union[datetime.time, Annotated[str, "HH:mm"]],
+        resource_path: Literal[
+            "calories", "steps", "distance", "floors", "elevation"
+        ] = "steps",
+        detail_level: Literal["1min", "15min"] = "1min",
+    ):
+        """Get Intraday Time Series.
+
+        Returns the Intraday Time Series for a given resource in the format requested.
+
+        Endpoint: '/1/user/-/activities/{resource-path}/date/{date}/1d/{detail-level}/time/{start-time}/{end-time}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd or today.
+
+        start_time : Union[datetime.time, Annotated[str, 'HH:mm']]
+                The start of the period in the format HH:mm.
+
+        end_time : Union[datetime.time, Annotated[str, 'HH:mm']]
+                The end of the period in the format HH:mm.
+
+        resource_path : Literal['calories', 'steps', 'distance', 'floors', 'elevation']
+                The resource-path; see options in the Resource Path Options section in the full documentation.
+
+        detail_level : Literal['1min', '15min']
+                Number of data points to include. Either 1min or 15min.
+        """
+        return await self._aget(
+            "/1/user/-/activities/{resource-path}/date/{date}/1d/{detail-level}/time/{start-time}/{end-time}.json",
+            param_kwargs={
+                "date": utils.format_date(date),
+                "start-time": utils.format_time(start_time),
+                "end-time": utils.format_time(end_time),
+                "resource-path": resource_path,
+                "detail-level": detail_level,
+            },
+        )
+
+    async def aget_activities_log(self):
+        """Get Lifetime Stats.
+
+        Updates a user's daily activity goals and returns a response using units in the unit system which corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1/user/-/activities.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+        """
+        return await self._aget("/1/user/-/activities.json")
+
+    async def aget_activities_log_list(
+        self,
+        sort: Literal["asc", "desc"],
+        limit: int,
+        before_date: Union[
+            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
+        ]
+        | str
+        | None = None,
+        after_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+        | str
+        | None = None,
+        offset: int = 0,
+    ):
+        """Get Activity Log List.
+
+        Retreives a list of user's activity log entries before or after a given day with offset and limit using units in the unit system which corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1/user/-/activities/list.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        sort : Literal['asc', 'desc']
+                The sort order of entries by date asc (ascending) or desc (descending).
+
+        limit : int
+                The maximum number of entries returned (maximum;100).
+
+        before_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']] | str, optional
+                The date in the format yyyy-MM-ddTHH:mm:ss. Only yyyy-MM-dd is required. Either beforeDate or afterDate should be specified.
+
+        after_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']] | str, optional
+                The date in the format yyyy-MM-ddTHH:mm:ss.
+
+        offset : int
+                The offset number of entries.
+        """
+        return await self._aget(
+            "/1/user/-/activities/list.json",
+            query_kwargs={
+                "sort": sort,
+                "limit": limit,
+                "beforeDate": utils.format_date_or_timestamp(before_date),
+                "afterDate": utils.format_date_or_timestamp(after_date),
+                "offset": offset,
+            },
+        )
+
+    async def aget_activities_tcx(
+        self, log_id: str, include_partial_tcx: bool | None = None
+    ):
+        """Get Activity TCX.
+
+        Retreives the details of a user's location and heart rate data during a logged exercise activity.
+
+        Endpoint: '/1/user/-/activities/{log-id}.tcx'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        log_id : str
+                The activity's log ID.
+
+        include_partial_tcx : bool, optional
+                Include TCX points regardless of GPS data being present
+        """
+        return await self._aget(
+            "/1/user/-/activities/{log-id}.tcx",
+            param_kwargs={"log-id": log_id},
+            query_kwargs={"includePartialTCX": include_partial_tcx},
+        )
+
+    async def aget_activities_types(self):
+        """Browse Activity Types.
+
+        Retreives a tree of all valid Fitbit public activities from the activities catelog as well as private custom activities the user created in the format requested.
+
+        Endpoint: '/1/activities.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+        """
+        return await self._aget("/1/activities.json")
+
+    async def aget_activities_type_detail(self, activity_id: str):
+        """Get Activity Type.
+
+        Returns the detail of a specific activity in the Fitbit activities database in the format requested. If activity has levels, it also returns a list of activity level details.
+
+        Endpoint: '/1/activities/{activity-id}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        activity_id : str
+                The activity ID.
+        """
+        return await self._aget(
+            "/1/activities/{activity-id}.json",
+            param_kwargs={"activity-id": activity_id},
+        )
+
+    async def aget_frequent_activities(self):
+        """Get Frequent Activities.
+
+        Retreives a list of a user's frequent activities in the format requested using units in the unit system which corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1/user/-/activities/frequent.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+        """
+        return await self._aget("/1/user/-/activities/frequent.json")
+
+    async def aget_recent_activities(self):
+        """Get Recent Activity Types.
+
+        Retreives a list of a user's recent activities types logged with some details of the last activity log of that type using units in the unit system which corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1/user/-/activities/recent.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+        """
+        return await self._aget("/1/user/-/activities/recent.json")
+
+    async def aget_favorite_activities(self):
+        """Get Favorite Activities.
+
+        Returns a list of a user's favorite activities.
+
+        Endpoint: '/1/user/-/activities/favorite.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+        """
+        return await self._aget("/1/user/-/activities/favorite.json")
+
+    async def aget_activities_goals(self, period: Literal["daily", "weekly"]):
+        """Get Activity Goals.
+
+        Retreives a user's current daily or weekly activity goals using measurement units as defined in the unit system, which corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1/user/-/activities/goals/{period}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        period : Literal['daily', 'weekly']
+                daily or weekly.
+        """
+        return await self._aget(
+            "/1/user/-/activities/goals/{period}.json", param_kwargs={"period": period}
+        )
+
+    async def aget_body_fat_by_date(
+        self, date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+    ):
+        """Get Body Fat Logs.
+
+        Retreives a list of all user's body fat log entries for a given day in the format requested.
+
+        Endpoint: '/1/user/-/body/log/fat/date/{date}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd.
+        """
+        return await self._aget(
+            "/1/user/-/body/log/fat/date/{date}.json",
+            param_kwargs={"date": utils.format_date(date)},
+        )
+
+    async def aget_body_fat_by_date_period(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        period: Literal["1d", "7d", "30d", "1w", "1m", "3m", "6m", "1y", "max"],
+    ):
+        """Get Body Fat Logs.
+
+        Retreives a list of all user's body fat log entries for a given day in the format requested.
+
+        Endpoint: '/1/user/-/body/log/fat/date/{date}/{period}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd.
+
+        period : Literal['1d', '7d', '30d', '1w', '1m', '3m', '6m', '1y', 'max']
+                The range for which data will be returned. Options are 1d, 7d, 30d, 1w, 1m, 3m, 6m, 1y, or max.
+        """
+        return await self._aget(
+            "/1/user/-/body/log/fat/date/{date}/{period}.json",
+            param_kwargs={"date": utils.format_date(date), "period": period},
+        )
+
+    async def aget_body_fat_by_date_range(
+        self,
+        base_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+    ):
+        """Get Body Fat Logs.
+
+        Retreives a list of all user's body fat log entries for a given day in the format requested.
+
+        Endpoint: '/1/user/-/body/log/fat/date/{base-date}/{end-date}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        base_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The range start date in the format yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The end date of the range.
+        """
+        return await self._aget(
+            "/1/user/-/body/log/fat/date/{base-date}/{end-date}.json",
+            param_kwargs={
+                "base-date": utils.format_date(base_date),
+                "end-date": utils.format_date(end_date),
+            },
+        )
+
+    async def aget_body_goals(self, goal_type: Literal["weight", "fat"]):
+        """Get Body Goals.
+
+        Retreives a user's current body fat percentage or weight goal using units in the unit systems that corresponds to the Accept-Language header providedin the format requested.
+
+        Endpoint: '/1/user/-/body/log/{goal-type}/goal.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        goal_type : Literal['weight', 'fat']
+                weight or fat.
+        """
+        return await self._aget(
+            "/1/user/-/body/log/{goal-type}/goal.json",
+            param_kwargs={"goal-type": goal_type},
+        )
+
+    async def aget_weight_by_date(
+        self, date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+    ):
+        """Get Weight Logs.
+
+        Retreives a list of all user's body weight log entries for a given day using units in the unit systems which corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1/user/-/body/log/weight/date/{date}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd.
+        """
+        return await self._aget(
+            "/1/user/-/body/log/weight/date/{date}.json",
+            param_kwargs={"date": utils.format_date(date)},
+        )
+
+    async def aget_weight_by_date_period(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        period: Literal["1d", "7d", "30d", "1w", "1m", "3m", "6m", "1y", "max"],
+    ):
+        """Get Body Fat Logs.
+
+        Retreives a list of all user's body weight log entries for a given day in the format requested.
+
+        Endpoint: '/1/user/-/body/log/weight/date/{date}/{period}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format yyyy-MM-dd.
+
+        period : Literal['1d', '7d', '30d', '1w', '1m', '3m', '6m', '1y', 'max']
+                The range for which data will be returned. Options are 1d, 7d, 30d, 1w, 1m, 3m, 6m, 1y, or max.
+        """
+        return await self._aget(
+            "/1/user/-/body/log/weight/date/{date}/{period}.json",
+            param_kwargs={"date": utils.format_date(date), "period": period},
+        )
+
+    async def aget_weight_by_date_range(
+        self,
+        base_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+    ):
+        """Get Body Fat Logs.
+
+        Retreives a list of all user's body fat log entries for a given day in the format requested.
+
+        Endpoint: '/1/user/-/body/log/weight/date/{base-date}/{end-date}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        base_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The range start date in the format yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The end date of the range.
+        """
+        return await self._aget(
+            "/1/user/-/body/log/weight/date/{base-date}/{end-date}.json",
+            param_kwargs={
+                "base-date": utils.format_date(base_date),
+                "end-date": utils.format_date(end_date),
+            },
+        )
+
+    async def aget_body_resource_by_date_period(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        period: Literal["1d", "7d", "30d", "1w", "1m", "3m", "6m", "1y", "max"],
+        resource_path: Literal["bmi", "fat", "weight"] = "weight",
+    ):
+        """Get Body Time Series.
+
+        Returns time series data in the specified range for a given resource in the format requested using units in the unit system that corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1/user/-/body/{resource-path}/date/{date}/{period}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The range start date in the format yyyy-MM-dd or today.
+
+        period : Literal['1d', '7d', '30d', '1w', '1m', '3m', '6m', '1y', 'max']
+                The range for which data will be returned. Options are 1d, 7d, 30d, 1w, 1m, 3m, 6m, 1y, or max.
+
+        resource_path : Literal['bmi', 'fat', 'weight']
+                The resource path, which incudes the bmi, fat, or weight options.
+        """
+        return await self._aget(
+            "/1/user/-/body/{resource-path}/date/{date}/{period}.json",
+            param_kwargs={
+                "date": utils.format_date(date),
+                "period": period,
+                "resource-path": resource_path,
+            },
+        )
+
+    async def aget_body_resource_by_date_range(
+        self,
+        base_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        resource_path: Literal["bmi", "fat", "weight"] = "weight",
+    ):
+        """Get Body Time Series.
+
+        Returns time series data in the specified range for a given resource in the format requested using units in the unit system that corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1/user/-/body/{resource-path}/date/{base-date}/{end-date}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        base_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The range start date in the format yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The end date of the range.
+
+        resource_path : Literal['bmi', 'fat', 'weight']
+                The resource path, which incudes the bmi, fat, or weight options.
+        """
+        return await self._aget(
+            "/1/user/-/body/{resource-path}/date/{base-date}/{end-date}.json",
+            param_kwargs={
+                "base-date": utils.format_date(base_date),
+                "end-date": utils.format_date(end_date),
+                "resource-path": resource_path,
+            },
+        )
+
+    async def aget_breathing_rate_summary_by_date(
+        self, date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+    ):
+        """Get Breathing Rate Summary by Date.
+
+        This endpoint returns average breathing rate data for a single date. Breathing Rate data applies specifically to a user’s “main sleep,” which is the longest single period of time during which they were asleep on a given date.
+
+        Endpoint: '/1/user/-/br/date/{date}.json'
+        Scopes: ['respiratory_rate']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/br/date/{date}.json",
+            param_kwargs={"date": utils.format_date(date)},
+        )
+
+    async def aget_breathing_rate_summary_by_interval(
+        self,
+        start_date: Union[
+            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
+        ],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+    ):
+        """Get Breathing Rate Summary by Interval.
+
+        This endpoint returns average breathing rate data for a date range. Breathing Rate data applies specifically to a user’s “main sleep,” which is the longest single period of time during which they were asleep on a given date.
+
+        Endpoint: '/1/user/-/br/date/{startDate}/{endDate}.json'
+        Scopes: ['respiratory_rate']
+
+        Parameters
+        ----------
+        start_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/br/date/{startDate}/{endDate}.json",
+            param_kwargs={
+                "startDate": utils.format_date(start_date),
+                "endDate": utils.format_date(end_date),
+            },
+        )
+
+    async def aget_breathing_rate_intraday_by_date(
+        self, date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+    ):
+        """Get Breathing Rate Intraday by Date.
+
+        This endpoint returns intraday breathing rate data for a single date. It measures the average breathing rate throughout the day and categories your breathing rate by sleep stage. Sleep stages vary between light sleep, deep sleep, REM sleep, and full sleep.
+
+        Endpoint: '/1/user/-/br/date/{date}/all.json'
+        Scopes: ['respiratory_rate']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/br/date/{date}/all.json",
+            param_kwargs={"date": utils.format_date(date)},
+        )
+
+    async def aget_breathing_rate_intraday_by_interval(
+        self,
+        start_date: Union[
+            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
+        ],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+    ):
+        """Get Breathing Rate Intraday by Interval.
+
+        This endpoint returns intraday breathing rate data for a date range. It measures the average breathing rate throughout the day and categories your breathing rate by sleep stage. Sleep stages vary between light sleep, deep sleep, REM sleep, and full sleep.
+
+        Endpoint: '/1/user/-/br/date/{startDate}/{endDate}/all.json'
+        Scopes: ['respiratory_rate']
+
+        Parameters
+        ----------
+        start_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/br/date/{startDate}/{endDate}/all.json",
+            param_kwargs={
+                "startDate": utils.format_date(start_date),
+                "endDate": utils.format_date(end_date),
+            },
+        )
+
+    async def aget_vo2_max_summary_by_date(
+        self, date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+    ):
+        """Get VO2 Max Summary by Date.
+
+        This endpoint returns the Cardio Fitness Score (VO2 Max) data for a single date. VO2 Max values will be shown as a range if no run data is available or a single numeric value if the user uses a GPS for runs.
+
+        Endpoint: '/1/user/-/cardioscore/date/{date}.json'
+        Scopes: ['cardio_fitness']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/cardioscore/date/{date}.json",
+            param_kwargs={"date": utils.format_date(date)},
+        )
+
+    async def aget_vo2_max_summary_by_interval(
+        self,
+        start_date: Union[
+            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
+        ],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+    ):
+        """Get VO2 Max Summary by Interval.
+
+        This endpoint returns the Cardio Fitness Score (VO2 Max) data for a date range. VO2 Max values will be shown as a range if no run data is available or a single numeric value if the user uses a GPS for runs.
+
+        Endpoint: '/1/user/-/cardioscore/date/{startDate}/{endDate}.json'
+        Scopes: ['cardio_fitness']
+
+        Parameters
+        ----------
+        start_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/cardioscore/date/{startDate}/{endDate}.json",
+            param_kwargs={
+                "startDate": utils.format_date(start_date),
+                "endDate": utils.format_date(end_date),
+            },
+        )
+
+    async def aget_devices(self):
+        """Get Devices.
+
+        Returns a list of the Fitbit devices connected to a user's account.
+
+        Endpoint: '/1/user/-/devices.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+        """
+        return await self._aget("/1/user/-/devices.json")
+
+    async def aget_alarms(self, tracker_id: int):
+        """Get Alarms.
+
+        Returns alarms for a device
+
+        Endpoint: '/1/user/-/devices/tracker/{tracker-id}/alarms.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        tracker_id : int
+                The ID of the tracker for which data is returned. The tracker-id value is found via the Get Devices endpoint.
+        """
+        return await self._aget(
+            "/1/user/-/devices/tracker/{tracker-id}/alarms.json",
+            param_kwargs={"tracker-id": tracker_id},
+        )
+
+    async def aget_ecg_log_list(
+        self,
+        sort: Literal["asc", "desc"],
+        limit: int,
+        before_date: Union[
+            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
+        ]
+        | str
+        | None = None,
+        after_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+        | str
+        | None = None,
+        offset: int = 0,
+    ):
+        """Get ECG Log List.
+
+        This endpoint is used for querying the user's on-device ECG readings.
+
+        Endpoint: '/1/user/-/ecg/list.json'
+        Scopes: ['electrocardiogram']
+
+        Parameters
+        ----------
+        sort : Literal['asc', 'desc']
+                The sort order of entries by date asc (ascending) or desc (descending).
+
+        limit : int
+                The maximum number of entries returned (maximum;10).
+
+        before_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']] | str, optional
+                The date in the format yyyy-MM-ddTHH:mm:ss. Only yyyy-MM-dd is required. Either beforeDate or afterDate should be specified.
+
+        after_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']] | str, optional
+                The date in the format yyyy-MM-ddTHH:mm:ss.
+
+        offset : int
+                The offset number of entries.
+        """
+        return await self._aget(
+            "/1/user/-/ecg/list.json",
+            query_kwargs={
+                "sort": sort,
+                "limit": limit,
+                "beforeDate": utils.format_date_or_timestamp(before_date),
+                "afterDate": utils.format_date_or_timestamp(after_date),
+                "offset": offset,
+            },
+        )
+
+    async def aget_friends(self):
+        """Get Friends.
+
+        Returns data of a user's friends in the format requested using units in the unit system which corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1.1/user/-/friends.json'
+        Scopes: ['social']
+        """
+        return await self._aget("/1.1/user/-/friends.json")
+
+    async def aget_friends_leaderboard(self):
+        """Get Friends Leaderboard.
+
+        Returns data of a user's friends in the format requested using units in the unit system which corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1.1/user/-/leaderboard/friends.json'
+        Scopes: ['social']
+        """
+        return await self._aget("/1.1/user/-/leaderboard/friends.json")
+
+    async def aget_heart_by_date_period(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        period: Literal["1d", "7d", "30d", "1w", "1m"],
+    ):
+        """Get Heart Rate Time Series.
+
+        Returns the time series data in the specified range for a given resource in the format requested using units in the unit systems that corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1/user/-/activities/heart/date/{date}/{period}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The end date of the period specified in the format yyyy-MM-dd or today.
+
+        period : Literal['1d', '7d', '30d', '1w', '1m']
+                The range of which data will be returned. Options are 1d, 7d, 30d, 1w, and 1m.
+        """
+        return await self._aget(
+            "/1/user/-/activities/heart/date/{date}/{period}.json",
+            param_kwargs={"date": utils.format_date(date), "period": period},
+        )
+
+    async def aget_heart_by_date_range(
+        self,
+        base_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+    ):
+        """Get Heart Rate Time Series.
+
+        Returns the time series data in the specified range for a given resource in the format requested using units in the unit systems that corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1/user/-/activities/heart/date/{base-date}/{end-date}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        base_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The range start date in  the format yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The end date of the range.
+        """
+        return await self._aget(
+            "/1/user/-/activities/heart/date/{base-date}/{end-date}.json",
+            param_kwargs={
+                "base-date": utils.format_date(base_date),
+                "end-date": utils.format_date(end_date),
+            },
+        )
+
+    async def aget_heart_by_date_range_intraday(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        detail_level: Literal["1sec", "1min", "5min", "15min"] = "1min",
+    ):
+        """Get Heart Rate Intraday Time Series.
+
+        Returns the intraday time series for a given resource in the format requested. If your application has the appropriate access, your calls to a time series endpoint for a specific day (by using start and end dates on the same day or a period of 1d), the response will include extended intraday values with a one-minute detail level for that day. Unlike other time series calls that allow fetching data of other users, intraday data is available only for and to the authorized user.
+
+        Endpoint: '/1/user/-/activities/heart/date/{date}/{end-date}/{detail-level}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The end date in the format of yyyy-MM-dd or today.
+
+        detail_level : Literal['1sec', '1min', '5min', '15min']
+                The number of data points to include either 1sec, 1min, 5min or 15min.
+        """
+        return await self._aget(
+            "/1/user/-/activities/heart/date/{date}/{end-date}/{detail-level}.json",
+            param_kwargs={
+                "date": utils.format_date(date),
+                "end-date": utils.format_date(end_date),
+                "detail-level": detail_level,
+            },
+        )
+
+    async def aget_heart_by_date_range_timestamp_intraday(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        start_time: Union[datetime.time, Annotated[str, "HH:mm"]],
+        end_time: Union[datetime.time, Annotated[str, "HH:mm"]],
+        detail_level: Literal["1sec", "1min", "5min", "15min"] = "1min",
+    ):
+        """Get Heart Rate Intraday Time Series.
+
+        Returns the intraday time series for a given resource in the format requested. If your application has the appropriate access, your calls to a time series endpoint for a specific day (by using start and end dates on the same day or a period of 1d), the response will include extended intraday values with a one-minute detail level for that day. Unlike other time series calls that allow fetching data of other users, intraday data is available only for and to the authorized user.
+
+        Endpoint: '/1/user/-/activities/heart/date/{date}/{end-date}/{detail-level}/time/{start-time}/{end-time}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The end date in the format of yyyy-MM-dd or today.
+
+        start_time : Union[datetime.time, Annotated[str, 'HH:mm']]
+                The start of the period in the format of HH:mm.
+
+        end_time : Union[datetime.time, Annotated[str, 'HH:mm']]
+                The end time of the period in the format of HH:mm.
+
+        detail_level : Literal['1sec', '1min', '5min', '15min']
+                The number of data points to include either 1sec, 1min, 5min or 15min.
+        """
+        return await self._aget(
+            "/1/user/-/activities/heart/date/{date}/{end-date}/{detail-level}/time/{start-time}/{end-time}.json",
+            param_kwargs={
+                "date": utils.format_date(date),
+                "end-date": utils.format_date(end_date),
+                "start-time": utils.format_time(start_time),
+                "end-time": utils.format_time(end_time),
+                "detail-level": detail_level,
+            },
+        )
+
+    async def aget_heart_by_date_intraday(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        detail_level: Literal["1sec", "1min", "5min", "15min"] = "1min",
+    ):
+        """Get Heart Rate Intraday Time Series.
+
+        Returns the intraday time series for a given resource in the format requested. If your application has the appropriate access, your calls to a time series endpoint for a specific day (by using start and end dates on the same day or a period of 1d), the response will include extended intraday values with a one-minute detail level for that day. Unlike other time series calls that allow fetching data of other users, intraday data is available only for and to the authorized user.
+
+        Endpoint: '/1/user/-/activities/heart/date/{date}/1d/{detail-level}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+
+        detail_level : Literal['1sec', '1min', '5min', '15min']
+                The number of data points to include either 1sec, 1min, 5min or 15min.
+        """
+        return await self._aget(
+            "/1/user/-/activities/heart/date/{date}/1d/{detail-level}.json",
+            param_kwargs={
+                "date": utils.format_date(date),
+                "detail-level": detail_level,
+            },
+        )
+
+    async def aget_heart_by_date_timestamp_intraday(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        start_time: Union[datetime.time, Annotated[str, "HH:mm"]],
+        end_time: Union[datetime.time, Annotated[str, "HH:mm"]],
+        detail_level: Literal["1sec", "1min", "5min", "15min"] = "1min",
+    ):
+        """Get Heart Rate Intraday Time Series.
+
+        Returns the intraday time series for a given resource in the format requested. If your application has the appropriate access, your calls to a time series endpoint for a specific day (by using start and end dates on the same day or a period of 1d), the response will include extended intraday values with a one-minute detail level for that day. Unlike other time series calls that allow fetching data of other users, intraday data is available only for and to the authorized user.
+
+        Endpoint: '/1/user/-/activities/heart/date/{date}/1d/{detail-level}/time/{start-time}/{end-time}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+
+        start_time : Union[datetime.time, Annotated[str, 'HH:mm']]
+                The start of the period in the format of HH:mm.
+
+        end_time : Union[datetime.time, Annotated[str, 'HH:mm']]
+                The end time of the period in the format of HH:mm.
+
+        detail_level : Literal['1sec', '1min', '5min', '15min']
+                The number of data points to include either 1sec, 1min, 5min or 15min.
+        """
+        return await self._aget(
+            "/1/user/-/activities/heart/date/{date}/1d/{detail-level}/time/{start-time}/{end-time}.json",
+            param_kwargs={
+                "date": utils.format_date(date),
+                "start-time": utils.format_time(start_time),
+                "end-time": utils.format_time(end_time),
+                "detail-level": detail_level,
+            },
+        )
+
+    async def aget_hrv_summary_date(
+        self, date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+    ):
+        """Get HRV Summary by Date.
+
+        This endpoint returns the Heart Rate Variability (HRV) data for a single date. HRV data applies specifically to a user’s “main sleep,” which is the longest single period of time asleep on a given date.
+
+        Endpoint: '/1/user/-/hrv/date/{date}.json'
+        Scopes: ['heartrate']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/hrv/date/{date}.json",
+            param_kwargs={"date": utils.format_date(date)},
+        )
+
+    async def aget_hrv_summary_interval(
+        self,
+        start_date: Union[
+            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
+        ],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+    ):
+        """Get HRV Summary by Interval.
+
+        This endpoint returns the Heart Rate Variability (HRV) data for a date range. HRV data applies specifically to a user’s “main sleep,” which is the longest single period of time asleep on a given date.
+
+        Endpoint: '/1/user/-/hrv/date/{startDate}/{endDate}.json'
+        Scopes: ['heartrate']
+
+        Parameters
+        ----------
+        start_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/hrv/date/{startDate}/{endDate}.json",
+            param_kwargs={
+                "startDate": utils.format_date(start_date),
+                "endDate": utils.format_date(end_date),
+            },
+        )
+
+    async def aget_hrv_intraday_by_date(
+        self, date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+    ):
+        """Get HRV Intraday by Date.
+
+        This endpoint returns the Heart Rate Variability (HRV) intraday data for a single date. HRV data applies specifically to a user’s “main sleep,” which is the longest single period of time asleep on a given date.
+
+        Endpoint: '/1/user/-/hrv/date/{date}/all.json'
+        Scopes: ['heartrate']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/hrv/date/{date}/all.json",
+            param_kwargs={"date": utils.format_date(date)},
+        )
+
+    async def aget_hrv_intraday_by_interval(
+        self,
+        start_date: Union[
+            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
+        ],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+    ):
+        """Get HRV Intraday by Interval.
+
+        This endpoint returns the Heart Rate Variability (HRV) intraday data for a single date. HRV data applies specifically to a user’s “main sleep,” which is the longest single period of time asleep on a given date.
+
+        Endpoint: '/1/user/-/hrv/date/{startDate}/{endDate}/all.json'
+        Scopes: ['heartrate']
+
+        Parameters
+        ----------
+        start_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/hrv/date/{startDate}/{endDate}/all.json",
+            param_kwargs={
+                "startDate": utils.format_date(start_date),
+                "endDate": utils.format_date(end_date),
+            },
+        )
+
+    async def aget_foods_locales(self):
+        """Get Food Locales.
+
+        Returns the food locales that the user may choose to search, log, and create food in.
+
+        Endpoint: '/1/foods/locales.json'
+        Scopes: ['nutrition']
+        """
+        return await self._aget("/1/foods/locales.json")
+
+    async def aget_foods_goal(self):
+        """Get Food Goals.
+
+        Returns a user's current daily calorie consumption goal and/or foodPlan value in the format requested.
+
+        Endpoint: '/1/user/-/foods/log/goal.json'
+        Scopes: ['nutrition']
+        """
+        return await self._aget("/1/user/-/foods/log/goal.json")
+
+    async def aget_foods_by_date(
+        self, date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+    ):
+        """Get Food Logs.
+
+        Retreives a summary and list of a user's food log entries for a given day in the format requested.
+
+        Endpoint: '/1/user/-/foods/log/date/{date}.json'
+        Scopes: ['nutrition']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date of records to be returned. In the format yyyy-MM-dd.
+        """
+        return await self._aget(
+            "/1/user/-/foods/log/date/{date}.json",
+            param_kwargs={"date": utils.format_date(date)},
+        )
+
+    async def aget_water_by_date(
+        self, date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+    ):
+        """Get Water Logs.
+
+        Retreives a summary and list of a user's water log entries for a given day in the requested using units in the unit system that corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1/user/-/foods/log/water/date/{date}.json'
+        Scopes: ['nutrition']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date of records to be returned. In the format yyyy-MM-dd.
+        """
+        return await self._aget(
+            "/1/user/-/foods/log/water/date/{date}.json",
+            param_kwargs={"date": utils.format_date(date)},
+        )
+
+    async def aget_water_goal(self):
+        """Get Water Goal.
+
+        Retreives a summary and list of a user's water goal entries for a given day in the requested using units in the unit system that corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1/user/-/foods/log/water/goal.json'
+        Scopes: ['nutrition']
+        """
+        return await self._aget("/1/user/-/foods/log/water/goal.json")
+
+    async def aget_foods_by_date_range(
+        self,
+        base_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        resource_path: Literal["caloriesIn", "water"] = "caloriesIn",
+    ):
+        """Get Food or Water Time Series.
+
+        Updates a user's daily activity goals and returns a response using units in the unit system which corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1/user/-/foods/log/{resource-path}/date/{base-date}/{end-date}.json'
+        Scopes: ['nutrition']
+
+        Parameters
+        ----------
+        base_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The range start date in the format yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The end date of the range.
+
+        resource_path : Literal['caloriesIn', 'water']
+                The resouce path. See options in the Resouce Path Options section in the full documentation.
+        """
+        return await self._aget(
+            "/1/user/-/foods/log/{resource-path}/date/{base-date}/{end-date}.json",
+            param_kwargs={
+                "base-date": utils.format_date(base_date),
+                "end-date": utils.format_date(end_date),
+                "resource-path": resource_path,
+            },
+        )
+
+    async def aget_foods_resource_by_date_period(
+        self,
+        date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        period: Literal["1d", "7d", "30d", "1w", "1m", "3m", "6m", "1y", "max"],
+        resource_path: Literal["caloriesIn", "water"] = "caloriesIn",
+    ):
+        """Get Food or Water Time Series.
+
+        Updates a user's daily activity goals and returns a response using units in the unit system which corresponds to the Accept-Language header provided.
+
+        Endpoint: '/1/user/-/foods/log/{resource-path}/date/{date}/{period}.json'
+        Scopes: ['nutrition']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The end date of the period specified in the format yyyy-MM-dd or today.
+
+        period : Literal['1d', '7d', '30d', '1w', '1m', '3m', '6m', '1y', 'max']
+                The range for which data will be returned. Options are 1d, 7d, 30d, 1w, 3m, 6m, 1y, or max.
+
+        resource_path : Literal['caloriesIn', 'water']
+                The resouce path. See options in the Resouce Path Options section in the full documentation.
+        """
+        return await self._aget(
+            "/1/user/-/foods/log/{resource-path}/date/{date}/{period}.json",
+            param_kwargs={
+                "date": utils.format_date(date),
+                "period": period,
+                "resource-path": resource_path,
+            },
+        )
+
+    async def aget_favorite_foods(self):
+        """Get Favorite Foods.
+
+        Returns a list of a user's favorite foods in the format requested. A favorite food in the list provides a quick way to log the food via the Log Food endpoint.
+
+        Endpoint: '/1/user/-/foods/log/favorite.json'
+        Scopes: ['nutrition']
+        """
+        return await self._aget("/1/user/-/foods/log/favorite.json")
+
+    async def aget_frequent_foods(self):
+        """Get Frequent Foods.
+
+        Returns a list of a user's frequent foods in the format requested. A frequent food in the list provides a quick way to log the food via the Log Food endpoint.
+
+        Endpoint: '/1/user/-/foods/log/frequent.json'
+        Scopes: ['nutrition']
+        """
+        return await self._aget("/1/user/-/foods/log/frequent.json")
+
+    async def aget_meals(self):
+        """Get Meals.
+
+        Returns a list of meals created by user in the user's food log in the format requested. User creates and manages meals on the Food Log tab on the website.
+
+        Endpoint: '/1/user/-/meals.json'
+        Scopes: ['nutrition']
+        """
+        return await self._aget("/1/user/-/meals.json")
+
+    async def aget_recent_foods(self):
+        """Get Recent Foods.
+
+        Returns a list of a user's frequent foods in the format requested. A frequent food in the list provides a quick way to log the food via the Log Food endpoint.
+
+        Endpoint: '/1/user/-/foods/log/recent.json'
+        Scopes: ['nutrition']
+        """
+        return await self._aget("/1/user/-/foods/log/recent.json")
+
+    async def aget_foods_info(self, food_id: str):
+        """Get Food.
+
+        Returns the details of a specific food in the Fitbit food databases or a private food that an authorized user has entered in the format requested.
+
+        Endpoint: '/1/foods/{food-id}.json'
+        Scopes: ['nutrition']
+
+        Parameters
+        ----------
+        food_id : str
+                The ID of the food.
+        """
+        return await self._aget(
+            "/1/foods/{food-id}.json", param_kwargs={"food-id": food_id}
+        )
+
+    async def aget_foods_units(self):
+        """Get Food Units.
+
+        Returns a list of all valid Fitbit food units in the format requested.
+
+        Endpoint: '/1/foods/units.json'
+        Scopes: ['nutrition']
+        """
+        return await self._aget("/1/foods/units.json")
+
+    async def aget_foods_list(self, query: str):
+        """Search Foods.
+
+        Returns a list of public foods from the Fitbit food database and private food the user created in the format requested.
+
+        Endpoint: '/1/foods/search.json'
+        Scopes: ['nutrition']
+
+        Parameters
+        ----------
+        query : str
+                The URL-encoded search query.
+        """
+        return await self._aget("/1/foods/search.json", query_kwargs={"query": query})
+
+    async def aget_sleep_by_date(
+        self, date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+    ):
+        """Get Sleep Log.
+
+        The Get Sleep Logs by Date endpoint returns a summary and list of a user's sleep log entries (including naps) as well as detailed sleep entry data for a given day.
+
+        Endpoint: '/1.2/user/-/sleep/date/{date}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date of records to be returned. In the format yyyy-MM-dd.
+        """
+        return await self._aget(
+            "/1.2/user/-/sleep/date/{date}.json",
+            param_kwargs={"date": utils.format_date(date)},
+        )
+
+    async def aget_sleep_by_date_range(
+        self,
+        base_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+    ):
+        """Get Sleep Logs by Date Range.
+
+        The Get Sleep Logs by Date Range endpoint returns a list of a user's sleep log entries (including naps) as well as detailed sleep entry data for a given date range (inclusive of start and end dates).
+
+        Endpoint: '/1.2/user/-/sleep/date/{base-date}/{end-date}.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        base_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date of records to be returned. In the format yyyy-MM-dd.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date of records to be returned. In the format yyyy-MM-dd.
+        """
+        return await self._aget(
+            "/1.2/user/-/sleep/date/{base-date}/{end-date}.json",
+            param_kwargs={
+                "base-date": utils.format_date(base_date),
+                "end-date": utils.format_date(end_date),
+            },
+        )
+
+    async def aget_sleep_list(
+        self,
+        sort: Literal["asc", "desc"],
+        limit: int,
+        before_date: Union[
+            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
+        ]
+        | str
+        | None = None,
+        after_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+        | str
+        | None = None,
+        offset: int = 0,
+    ):
+        """Get Sleep Logs List.
+
+        The Get Sleep Logs List endpoint returns a list of a user's sleep logs (including naps) before or after a given day with offset, limit, and sort order.
+
+        Endpoint: '/1.2/user/-/sleep/list.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        sort : Literal['asc', 'desc']
+                The sort order of entries by date asc (ascending) or desc (descending).
+
+        limit : int
+                The maximum number of entries returned (maximum;100).
+
+        before_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']] | str, optional
+                The date in the format yyyy-MM-ddTHH:mm:ss. Only yyyy-MM-dd is required. Either beforeDate or afterDate should be specified.
+
+        after_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']] | str, optional
+                The date in the format yyyy-MM-ddTHH:mm:ss.
+
+        offset : int
+                The offset number of entries.
+        """
+        return await self._aget(
+            "/1.2/user/-/sleep/list.json",
+            query_kwargs={
+                "sort": sort,
+                "limit": limit,
+                "beforeDate": utils.format_date_or_timestamp(before_date),
+                "afterDate": utils.format_date_or_timestamp(after_date),
+                "offset": offset,
+            },
+        )
+
+    async def aget_sleep_goal(self):
+        """Get Sleep Goal.
+
+        Returns the user's sleep goal.
+
+        Endpoint: '/1.2/user/-/sleep/goal.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+        """
+        return await self._aget("/1.2/user/-/sleep/goal.json")
+
+    async def aget_sp_o2_summary_by_date(
+        self, date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+    ):
+        """Get SpO2 Summary by Date.
+
+        This endpoint returns the SpO2 summary data for a single date. SpO2 applies specifically to a user’s “main sleep”, which is the longest single period of time asleep on a given date.
+
+        Endpoint: '/1/user/-/spo2/date/{date}.json'
+        Scopes: ['oxygen_saturation']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/spo2/date/{date}.json",
+            param_kwargs={"date": utils.format_date(date)},
+        )
+
+    async def aget_sp_o2_summary_by_interval(
+        self,
+        start_date: Union[
+            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
+        ],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+    ):
+        """Get SpO2 Summary by Interval.
+
+        This endpoint returns the SpO2 summary data for a date range. SpO2 applies specifically to a user’s “main sleep”, which is the longest single period of time asleep on a given date.
+
+        Endpoint: '/1/user/-/spo2/date/{startDate}/{endDate}.json'
+        Scopes: ['oxygen_saturation']
+
+        Parameters
+        ----------
+        start_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/spo2/date/{startDate}/{endDate}.json",
+            param_kwargs={
+                "startDate": utils.format_date(start_date),
+                "endDate": utils.format_date(end_date),
+            },
+        )
+
+    async def aget_sp_o2_intraday_by_date(
+        self, date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+    ):
+        """Get SpO2 Intraday by Date.
+
+        This endpoint returns the SpO2 intraday data for a single date. SpO2 applies specifically to a user’s “main sleep”, which is the longest single period of time asleep on a given date.
+
+        Endpoint: '/1/user/-/spo2/date/{date}/all.json'
+        Scopes: ['oxygen_saturation']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/spo2/date/{date}/all.json",
+            param_kwargs={"date": utils.format_date(date)},
+        )
+
+    async def aget_sp_o2_intraday_by_interval(
+        self,
+        start_date: Union[
+            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
+        ],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+    ):
+        """Get SpO2 Intraday by Interval.
+
+        This endpoint returns the SpO2 intraday data for a specified date range. SpO2 applies specifically to a user’s “main sleep”, which is the longest single period of time asleep on a given date.
+
+        Endpoint: '/1/user/-/spo2/date/{startDate}/{endDate}/all.json'
+        Scopes: ['oxygen_saturation']
+
+        Parameters
+        ----------
+        start_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/spo2/date/{startDate}/{endDate}/all.json",
+            param_kwargs={
+                "startDate": utils.format_date(start_date),
+                "endDate": utils.format_date(end_date),
+            },
+        )
+
+    async def aget_subscriptions_list(self, collection_path: str):
+        """Get a List of Subscriptions.
+
+        Retreives a list of a user's subscriptions for your application in the format requested. You can either fetch subscriptions for a specific collection or the entire list of subscriptions for the user. For best practice, make sure that your application maintains this list on your side and use this endpoint only to periodically ensure data consistency.
+
+        Endpoint: '/1/user/-/{collection-path}/apiSubscriptions.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+
+        Parameters
+        ----------
+        collection_path : str
+                This is the resource of the collection to receive notifications from (foods, activities, sleep, or body). If not present, subscription will be created for all collections. If you have both all and specific collection subscriptions, you will get duplicate notifications on that collections' updates. Each subscriber can have only one subscription for a specific user's collection.
+        """
+        return await self._aget(
+            "/1/user/-/{collection-path}/apiSubscriptions.json",
+            param_kwargs={"collection-path": collection_path},
+        )
+
+    async def aget_temp_core_summary_by_date(
+        self, date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+    ):
+        """Get Temperature (Core) Summary by Date.
+
+        Returns the Temperature (Core) data for a single date. Temperature (Core) data applies specifically to data logged manually by the user throughout the day.
+
+        Endpoint: '/1/user/-/temp/core/date/{date}.json'
+        Scopes: ['temperature']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/temp/core/date/{date}.json",
+            param_kwargs={"date": utils.format_date(date)},
+        )
+
+    async def aget_temp_core_summary_by_interval(
+        self,
+        start_date: Union[
+            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
+        ],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+    ):
+        """Get Temperature (Core) Summary by Interval.
+
+        Returns Temperature (Core) data for a date range. Temperature (Core) data applies specifically to data logged manually by the user throughout the day and the maximum date range cannot exceed 30 days.
+
+        Endpoint: '/1/user/-/temp/core/date/{startDate}/{endDate}.json'
+        Scopes: ['temperature']
+
+        Parameters
+        ----------
+        start_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/temp/core/date/{startDate}/{endDate}.json",
+            param_kwargs={
+                "startDate": utils.format_date(start_date),
+                "endDate": utils.format_date(end_date),
+            },
+        )
+
+    async def aget_temp_skin_summary_date(
+        self, date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+    ):
+        """Get Temperature (Skin) Summary by Date.
+
+        Returns the Temperature (Skin) data for a single date. Temperature (Skin) data applies specifically to a user’s “main sleep”, which is the longest single period of time asleep on a given date.
+
+        Endpoint: '/1/user/-/temp/skin/date/{date}.json'
+        Scopes: ['temperature']
+
+        Parameters
+        ----------
+        date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/temp/skin/date/{date}.json",
+            param_kwargs={"date": utils.format_date(date)},
+        )
+
+    async def aget_temp_skin_summary_by_interval(
+        self,
+        start_date: Union[
+            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
+        ],
+        end_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
+    ):
+        """Get Temperature (Skin) Summary by Interval.
+
+        Returns Temperature (Skin) data for a date range. It only returns a value for dates on which the Fitbit device was able to record Temperature (skin) data and the maximum date range cannot exceed 30 days.
+
+        Endpoint: '/1/user/-/temp/skin/date/{startDate}/{endDate}.json'
+        Scopes: ['temperature']
+
+        Parameters
+        ----------
+        start_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+
+        end_date : Union[datetime.date, Literal['today'], Annotated[str, 'yyyy-MM-dd']]
+                The date in the format of yyyy-MM-dd or today.
+        """
+        return await self._aget(
+            "/1/user/-/temp/skin/date/{startDate}/{endDate}.json",
+            param_kwargs={
+                "startDate": utils.format_date(start_date),
+                "endDate": utils.format_date(end_date),
+            },
+        )
+
+    async def aget_badges(self):
+        """Get Badges.
+
+        Retrieves the user's badges in the format requested. Response includes all badges for the user as seen on the Fitbit website badge locker (both activity and weight related.) The endpoint returns weight and distance badges based on the user's unit profile preference as on the website.
+
+        Endpoint: '/1/user/-/badges.json'
+        Scopes: ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight']
+        """
+        return await self._aget("/1/user/-/badges.json")
+
+    async def aget_profile(self):
+        """Get Profile.
+
+        Returns a user's profile. The authenticated owner receives all values. However, the authenticated user's access to other users' data is subject to those users' privacy settings. Numerical values are returned in the unit system specified in the Accept-Language header.
+
+        Endpoint: '/1/user/-/profile.json'
+        Scopes: ['location', 'profile', 'weight']
+        """
+        return await self._aget("/1/user/-/profile.json")
