@@ -138,7 +138,6 @@ def get_tokens_local(scopes: Sequence[Scope] = typing.get_args(Scope), auto_open
 """<html>
     <head>
         <script type='text/javascript'>
-            console.log(window.opener);
             window.opener && window.opener.location.reload(true);
             window.close();
         </script>
