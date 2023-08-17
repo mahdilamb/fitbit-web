@@ -140,9 +140,9 @@ def get_tokens_local(scopes: Sequence[Scope] = typing.get_args(Scope), auto_open
         
     </head>
     <body>You can now close this tab...
-    <script type='text/javascript'>
-            window.opener && window.opener.location.reload(true);
-            window.close();
+        <script type='text/javascript'>
+                window.opener && window.opener.location.reload(true);
+                window.close();
         </script>
     </body>
 </html>""",
