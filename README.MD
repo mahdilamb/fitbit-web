@@ -48,6 +48,25 @@ web_client = client.Client(auth.get_tokens_local(scopes=["profile"]))
 print(web_client.get_profile())
 ```
 
+Or for the async version:
+
+```python
+from fitbit_web import client, auth
+import asyncio
+
+
+async def main():
+    async with client.Client(
+        auth.get_tokens_local(scopes=["profile"])
+    ).async_client() as async_client:
+        print(await async_client.aget_profile())
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
+```
+
 ## Development
 
 The client is generated using the `builder` package. This can either be run using `make`:
