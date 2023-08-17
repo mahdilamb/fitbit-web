@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[project]
+description = "Package to access Fitbit WebAPI."
+dynamic = ["version"]
+name = "fitibit-web"
+
+authors = [{name = "Mahdi Lamb", email = "mahdilamb@gmail.com"}]
+dependencies = [
+  "python-dotenv",
+  "requests",
+]
+
+[project.optional-dependencies]
+all = [
+  "fitibit-web[dev,test,loguru]",
+]
+dev = [
+  "fitibit-web[test]",
+  "pydantic[email]",
+]
+loguru = ["loguru"]
+test = [
+  "fitibit-web[loguru]",
+  "black",
+  "isort",
+  "mypy",
+  "bandit",
+  "pytest",
+  "pytest-cov",
+  "docformatter",
+  "pydocstyle",
+  "types-requests",
+]
+[tool.setuptools.dynamic]
+version = {attr = "fitbit_web.__version__"}
+
+[tool.setuptools]
+packages = ["fitbit_web"]
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
+[tool.docformatter]
+black = true
+recursive = true
+
+[tool.mypy]
+plugins = "pydantic.mypy"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+python_files = [
+  "test_*.py",
+]
+python_functions = ["*_test"]
+testpaths = [
+  "tests",
+]
