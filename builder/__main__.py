@@ -71,6 +71,7 @@ def build(
     utils_path: str,
     output_path: str | None = None,
     spacing: str = "\t",
+    include_async: bool | str = False,
 ):
     r"""Build the client API.
 
@@ -86,11 +87,11 @@ def build(
         The spacing to use, by default "\t"
     """
 
-    def make_def(path: str, props: builder.api.Operation):
+    def make_def(
+        path: str, props: builder.api.Operation, fn_def="def ", fn_return="return "
+    ):
         endpoint = path
-        output = (
-            f"{spacing}def {builder.utils.camel_to_snake_case(props.operation_id)}(self"
-        )
+        output = f"{spacing}{fn_def}{builder.utils.camel_to_snake_case(props.operation_id)}(self"
         path_kwargs = ""
         query_kwargs = ""
         params_docstring = ""
@@ -138,7 +139,7 @@ def build(
             )
 
         output += f'\n{spacing*2}"""\n'
-        output += f"{spacing*2}return self._get('{path}'{path_kwargs}{query_kwargs})"
+        output += f"{spacing*2}{fn_return}self._{fn_def.split('def ')[-1].strip()}get('{path}'{path_kwargs}{query_kwargs})"
 
         return output
 
@@ -161,10 +162,33 @@ class FitbitWebApi(abc.ABC):
 {spacing}) -> dict[str, Any]:
 {spacing*2}...
 """
+    if include_async is not False:
+        output += f"""
+{spacing}@abc.abstractmethod
+{spacing}async def _{include_async if isinstance(include_async,str) else ''}get(
+{spacing*2}self,
+{spacing*2}url: str,
+{spacing*2}param_kwargs: dict[str, Any] | None = None,
+{spacing*2}query_kwargs: dict[str, Any] | None = None,
+{spacing}) -> dict[str, Any]:
+{spacing*2}...
+"""
     for path, path_properties in api.paths.items():
         if "get" not in path_properties:
             continue
         output += make_def(path, path_properties["get"]) + "\n"
+    for path, path_properties in api.paths.items():
+        if "get" not in path_properties:
+            continue
+        output += (
+            make_def(
+                path,
+                path_properties["get"],
+                fn_def=f"async def {include_async if isinstance(include_async,str) else ''}",
+                fn_return="return await ",
+            )
+            + "\n"
+        )
     if output_path is not None:
         with open(output_path, "w") as fp:
             fp.write(output)
@@ -214,7 +238,12 @@ def main():
         raise RuntimeError("The API has changed. Please re-check the repo.")
     api = builder.api.FitbitWebAPI.model_validate(apply_overrides(response.json()))
 
-    build(api, output_path=client_api.__file__, utils_path=utils.__name__)
+    build(
+        api,
+        output_path=client_api.__file__,
+        utils_path=utils.__name__,
+        include_async="a",
+    )
     isort.file(client_api.__file__)
     black.main([client_api.__file__])
 
