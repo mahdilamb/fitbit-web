@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+      - uses: browser-actions/setup-chrome@v1
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -29,6 +30,11 @@ jobs:
           pip install .[test]
       - name: Unit tests [pytest]
         if: ${{ always() }}
+        env: # Or as an environment variable
+          FITBIT_CLIENT_ID: ${{ secrets.FITBIT_CLIENT_ID }}
+          FITBIT_CLIENT_SECRET: ${{ secrets.FITBIT_CLIENT_SECRET }}
+          FITBIT_REDIRECT_URL: ${{ secrets.FITBIT_REDIRECT_URL }}
+        
         run: pytest --cov=fitbit_web --cov-report term-missing
       - name: Check docstrings [pydocstyle]
         if: ${{ always() }}
