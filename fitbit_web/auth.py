@@ -26,6 +26,11 @@ CLIENT_ID = os.getenv("FITBIT_CLIENT_ID", None)
 CLIENT_SECRET = os.getenv("FITBIT_CLIENT_SECRET", None)
 REDIRECT_URL = os.getenv("FITBIT_REDIRECT_URL", None)
 
+
+AUTH_URL = "https://www.fitbit.com/oauth2/authorize?response_type=code&code_challenge_method=S256"
+TOKEN_URL = "https://api.fitbit.com/oauth2/token?grant_type=authorization_code"
+REFRESH_URL = "https://api.fitbit.com/oauth2/token?grant_type=refresh_token"
+
 CODE_VERIFIER = secrets.token_urlsafe(96)
 
 
@@ -61,7 +66,7 @@ class AuthTokens:
     def refresh(self) -> "AuthTokens":
         """Refresh the auth tokens."""
         response = requests.post(
-            f"https://api.fitbit.com/oauth2/token?client_id={CLIENT_ID}&refresh_token={self.refresh_token}&grant_type=refresh_token",
+            f"{REFRESH_URL}client_id={CLIENT_ID}&refresh_token={self.refresh_token}",
             headers={
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Authorization": f"Basic {base64.urlsafe_b64encode(f'{CLIENT_ID}:{CLIENT_SECRET}'.encode('utf-8')).decode('utf-8')}",
@@ -91,13 +96,18 @@ def code_challenge(code_verifier: str = CODE_VERIFIER) -> str:
     )
 
 
-def get_oauth2_url(
+def get_authorization_url(
     scopes: Sequence[Scope] = typing.get_args(Scope), code_verifier: str = CODE_VERIFIER
 ):
     """Get the OAuth2 url."""
     check_secrets()
 
-    return f"https://www.fitbit.com/oauth2/authorize?response_type=code&client_id={CLIENT_ID}&code_challenge={code_challenge(code_verifier)}&code_challenge_method=S256&scope={('+'.join(scopes))}&redirect_uri={urllib.parse.quote(REDIRECT_URL)}"
+    return f"{AUTH_URL}&client_id={CLIENT_ID}&code_challenge={code_challenge(code_verifier)}&scope={('+'.join(scopes))}&redirect_uri={urllib.parse.quote(REDIRECT_URL)}"
+
+
+def get_token_url(code: str, code_verifier: str = CODE_VERIFIER):
+    """Get the token url."""
+    return f"{TOKEN_URL}&client_id={CLIENT_ID}&code={code}&code_verifier={code_verifier}&redirect_uri={urllib.parse.quote(REDIRECT_URL)}"
 
 
 def token_from_code(code: str, code_verifier: str = CODE_VERIFIER) -> AuthTokens:
@@ -106,7 +116,7 @@ def token_from_code(code: str, code_verifier: str = CODE_VERIFIER) -> AuthTokens
     Note that the code_verified must be hashed as in the original process.
     """
     response = requests.post(
-        f"https://api.fitbit.com/oauth2/token?client_id={CLIENT_ID}&code={code}&code_verifier={code_verifier}&grant_type=authorization_code&redirect_uri={urllib.parse.quote(REDIRECT_URL)}",
+        get_token_url(code, code_verifier=code_verifier),
         headers={
             "Content-Type": "application/x-www-form-urlencoded",
             "Authorization": f"Basic {base64.urlsafe_b64encode(f'{CLIENT_ID}:{CLIENT_SECRET}'.encode('utf-8')).decode('utf-8')}",
@@ -144,7 +154,7 @@ def get_tokens_local(
         If redirect is not to localhost.
     """
     check_secrets()
-    oauth2_url = get_oauth2_url(scopes, code_verifier=code_verifier)
+    oauth2_url = get_authorization_url(scopes, code_verifier=code_verifier)
     if auto_open:
         webbrowser.open(oauth2_url)
     print(f"Authorize Fitbit usage: {oauth2_url}")
