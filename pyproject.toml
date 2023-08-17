@@ -14,15 +14,15 @@ dependencies = [
 
 [project.optional-dependencies]
 all = [
-  "fitibit-web[dev,test,loguru]",
+  "fitbit-web[dev,test,loguru]",
 ]
 dev = [
-  "fitibit-web[test]",
+  "fitbit-web[test]",
   "pydantic[email]",
 ]
 loguru = ["loguru"]
 test = [
-  "fitibit-web[loguru]",
+  "fitbit-web[loguru]",
   "black",
   "isort",
   "mypy",
