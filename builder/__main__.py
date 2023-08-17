@@ -177,18 +177,19 @@ class FitbitWebApi(abc.ABC):
         if "get" not in path_properties:
             continue
         output += make_def(path, path_properties["get"]) + "\n"
-    for path, path_properties in api.paths.items():
-        if "get" not in path_properties:
-            continue
-        output += (
-            make_def(
-                path,
-                path_properties["get"],
-                fn_def=f"async def {include_async if isinstance(include_async,str) else ''}",
-                fn_return="return await ",
+    if include_async is not False:
+        for path, path_properties in api.paths.items():
+            if "get" not in path_properties:
+                continue
+            output += (
+                make_def(
+                    path,
+                    path_properties["get"],
+                    fn_def=f"async def {include_async if isinstance(include_async,str) else ''}",
+                    fn_return="return await ",
+                )
+                + "\n"
             )
-            + "\n"
-        )
     if output_path is not None:
         with open(output_path, "w") as fp:
             fp.write(output)
