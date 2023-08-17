@@ -32,6 +32,7 @@ test = [
   "docformatter",
   "pydocstyle",
   "types-requests",
+  "webbot"
 ]
 [tool.setuptools.dynamic]
 version = {attr = "fitbit_web.__version__"}
