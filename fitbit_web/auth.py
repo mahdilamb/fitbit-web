@@ -87,11 +87,30 @@ def check_secrets():
         )
 
 
-def get_tokens_local(scopes: Sequence[Scope] = typing.get_args(Scope)) -> AuthTokens:
-    """Get the auth token using the secrets in the constants."""
+def get_tokens_local(scopes: Sequence[Scope] = typing.get_args(Scope), auto_open:bool=True) -> AuthTokens:
+    """Get the auth token using the secrets in the constants.
+
+    Parameters
+    ----------
+    scopes : Sequence[Scope], optional
+        The scopes to use for authorization, by default all
+    auto_open : bool, optional
+        Whether to open a browser windows, by default True
+
+    Returns
+    -------
+    AuthTokens
+        The authorization token.
+
+    Raises
+    ------
+    RuntimeError
+        If redirect is not to localhost.
+    """
     check_secrets()
     oauth2_url = get_oauth2_url(scopes)
-    webbrowser.open(oauth2_url)
+    if auto_open:
+        webbrowser.open(oauth2_url)
     print(f"Authorize Fitbit usage: {oauth2_url}")
     if (host := urllib.parse.urlparse(REDIRECT_URL).netloc.split(":", maxsplit=1))[
         0
@@ -115,8 +134,17 @@ def get_tokens_local(scopes: Sequence[Scope] = typing.get_args(Scope)) -> AuthTo
                 self.send_header("Content-type", "text/html")
                 self.end_headers()
                 self.wfile.write(
-                    bytes(
-                        "<html><head><script type='text/javascript'>window.close()</script></head><body>You can now close this tab...</body></html>",
+                    bytes(\
+"""<html>
+    <head>
+        <script type='text/javascript'>
+            console.log(window.opener);
+            window.opener && window.opener.location.reload(true);
+            window.close();
+        </script>
+    </head>
+    <body>You can now close this tab...</body>
+</html>""",
                         "utf-8",
                     )
                 )
@@ -145,7 +173,7 @@ def get_tokens_local(scopes: Sequence[Scope] = typing.get_args(Scope)) -> AuthTo
     return AuthTokens(**response)
 
 
-def get_oauth2_url(scopes: Sequence[Scope]):
+def get_oauth2_url(scopes: Sequence[Scope] = typing.get_args(Scope)):
     """Get the OAuth2 url."""
     check_secrets()
 

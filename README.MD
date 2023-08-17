@@ -44,7 +44,7 @@ FITBIT_REDIRECT_URL=<redirect-url>
 from fitbit_web import client, auth
 
 
-web_client = client.Client(auth.get_tokens_local(scopes=["profile"]))
+web_client = client.Client(auth.get_tokens_local(scopes=["profile"], auto_open=True))
 print(web_client.get_profile())
 ```
 
