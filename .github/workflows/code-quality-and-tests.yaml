@@ -14,6 +14,8 @@ jobs:
         version_check_path: fitbit_web/__init__.py
         use_black: true
         black_args: '"fitbit_web" "tests"'
+        use_isort: true
+        isort_args: '"fitbit_web" "tests"'
 
   build:
     needs: prepare
