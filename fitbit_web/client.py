@@ -23,7 +23,7 @@ class Client(contextlib.ContextDecorator, api.FitbitWebApi):
     def __init__(self, tokens: auth.AuthTokens) -> None:
         """Create a client using the given auth tokens."""
         self.__tokens = tokens
-        self.__session: aiohttp.ClientSession = aiohttp.ClientSession()
+        self.__session: aiohttp.ClientSession
 
     async def __aenter__(self):
         self.__session = aiohttp.ClientSession()
