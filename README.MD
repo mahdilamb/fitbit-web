@@ -58,7 +58,7 @@ import asyncio
 async def main():
     async with client.Client(
         auth.get_tokens_local(scopes=["profile"])
-    ).async_client() as async_client:
+    ) as async_client:
         print(await async_client.aget_profile())
 
 

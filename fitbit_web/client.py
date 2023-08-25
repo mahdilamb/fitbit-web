@@ -1,7 +1,6 @@
 """Implementation of main client."""
 import contextlib
-import urllib.parse
-from typing import Any, Self
+from typing import Any
 
 import aiohttp
 import requests
@@ -18,13 +17,22 @@ from fitbit_web import api, auth, utils
 TIMEOUT: float = 2
 
 
-class Client(api.FitbitWebApi):
+class Client(contextlib.ContextDecorator, api.FitbitWebApi):
     """Fitbit WebAPI client."""
 
     def __init__(self, tokens: auth.AuthTokens) -> None:
         """Create a client using the given auth tokens."""
         self.__tokens = tokens
-        self.__session: aiohttp.ClientSession | None = None
+        self.__session: aiohttp.ClientSession = aiohttp.ClientSession()
+
+    async def __aenter__(self):
+        self.__session = aiohttp.ClientSession()
+        return self
+
+    async def __aexit__(self, *_):
+        if self.__session is not None:
+            await self.__session.close()
+            self.__session = None
 
     def _get(
         self,
@@ -59,17 +67,6 @@ class Client(api.FitbitWebApi):
         if response.status_code != 200:
             raise Exception(response.text)
         return response.json()
-
-    @contextlib.asynccontextmanager
-    async def async_client(self):
-        """Create a new async manager."""
-        self.__session = aiohttp.ClientSession()
-        try:
-            yield self
-        finally:
-            if self.__session is not None and not self.__session.closed:
-                await self.__session.close()
-                self.__session = None
 
     async def _aget(
         self,
