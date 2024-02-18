@@ -29,7 +29,9 @@ REDIRECT_URL = os.getenv("FITBIT_REDIRECT_URL", None)
 
 
 AUTH_URL = "https://www.fitbit.com/oauth2/authorize?response_type=code&code_challenge_method=S256"
-TOKEN_URL = "https://api.fitbit.com/oauth2/token?grant_type=authorization_code"  # nosec: B105
+TOKEN_URL = (
+    "https://api.fitbit.com/oauth2/token?grant_type=authorization_code"  # nosec: B105
+)
 REFRESH_URL = "https://api.fitbit.com/oauth2/token?grant_type=refresh_token"
 
 CODE_VERIFIER = secrets.token_urlsafe(96)
