@@ -1,4 +1,4 @@
-.PHONY: help tests ruff isort docstrings format mypy qc api
+.PHONY: help tests ruff isort docstrings format mypy qc api requirements
 default: help
 
 MAIN_PACKAGE_DIRECTORY="fitbit_web"
@@ -28,6 +28,9 @@ qc: format tests bandit mypy # Run all the QC tasks.
 api: PYTHONPATH=$(shell pwd)
 api: # Generate the Mixin for the FitbitWebAPI
 	python3 -m builder
+
+requirements: # Save the versions being used
+	@pip-compile pyproject.toml -o requirements.txt
 
 help: # Show help for each of the Makefile recipes.
 	@grep -E '^[a-zA-Z0-9 -]+:.*#'  Makefile | sort | while read -r l; do printf "\033[1;32m$$(echo $$l | cut -f 1 -d':')\033[00m\n\t$$(echo $$l | cut -f 2- -d'#')\n"; done
