@@ -20,7 +20,7 @@ try:
 except ModuleNotFoundError:
     import logging
 
-    logger = logging.getLogger()
+    logger = logging.getLogger()  # type: ignore
 load_dotenv()
 
 CLIENT_ID = os.getenv("FITBIT_CLIENT_ID", None)
@@ -29,7 +29,7 @@ REDIRECT_URL = os.getenv("FITBIT_REDIRECT_URL", None)
 
 
 AUTH_URL = "https://www.fitbit.com/oauth2/authorize?response_type=code&code_challenge_method=S256"
-TOKEN_URL = "https://api.fitbit.com/oauth2/token?grant_type=authorization_code"
+TOKEN_URL = "https://api.fitbit.com/oauth2/token?grant_type=authorization_code"  # nosec: B105
 REFRESH_URL = "https://api.fitbit.com/oauth2/token?grant_type=refresh_token"
 
 CODE_VERIFIER = secrets.token_urlsafe(96)
@@ -103,12 +103,12 @@ def get_authorization_url(
     """Get the OAuth2 url."""
     check_secrets()
 
-    return f"{AUTH_URL}&client_id={CLIENT_ID}&code_challenge={code_challenge(code_verifier)}&scope={('+'.join(scopes))}&redirect_uri={urllib.parse.quote(REDIRECT_URL)}"
+    return f"{AUTH_URL}&client_id={CLIENT_ID}&code_challenge={code_challenge(code_verifier)}&scope={('+'.join(scopes))}&redirect_uri={urllib.parse.quote(REDIRECT_URL)}"  # type: ignore
 
 
 def get_token_url(code: str, code_verifier: str = CODE_VERIFIER):
     """Get the token url."""
-    return f"{TOKEN_URL}&client_id={CLIENT_ID}&code={code}&code_verifier={code_verifier}&redirect_uri={urllib.parse.quote(REDIRECT_URL)}"
+    return f"{TOKEN_URL}&client_id={CLIENT_ID}&code={code}&code_verifier={code_verifier}&redirect_uri={urllib.parse.quote(REDIRECT_URL)}"  # type: ignore
 
 
 def token_from_code(code: str, code_verifier: str = CODE_VERIFIER) -> AuthTokens:
@@ -159,9 +159,10 @@ def get_tokens_local(
     if auto_open:
         webbrowser.open(oauth2_url)
     print(f"Authorize Fitbit usage: {oauth2_url}")
-    if (host := urllib.parse.urlparse(REDIRECT_URL).netloc.split(":", maxsplit=1))[
-        0
-    ] not in ("localhost", "127.0.0.1"):
+    if (
+        (host := urllib.parse.urlparse(REDIRECT_URL).netloc.split(":", maxsplit=1))[0]  # type: ignore
+        not in ("localhost", "127.0.0.1")
+    ):
         raise RuntimeError(
             "Function only supports getting a token from the local connection."
         )

@@ -10,7 +10,7 @@ try:
 except ModuleNotFoundError:
     import logging
 
-    logger = logging.getLogger()
+    logger = logging.getLogger()  # type: ignore
 
 from fitbit_web import api, auth, utils
 
@@ -64,11 +64,9 @@ class Client(api.FitbitWebApi):
         param_kwargs: dict[str, Any] | None = None,
         query_kwargs: dict[str, Any] | None = None,
     ):
-
         url = utils.format_url(url, param_kwargs, query_kwargs)
         logger.debug(f"GETting from Fitbit WebAPI: {url}")
         async with aiohttp.ClientSession() as session:
-
             async with session.get(
                 url,
                 headers={
