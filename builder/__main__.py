@@ -1,4 +1,5 @@
 """Script for building an API from the swagger json schema of Fitbit Web API."""
+
 import hashlib
 from collections import defaultdict
 from types import MappingProxyType

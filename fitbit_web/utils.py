@@ -1,4 +1,5 @@
 """Utility functions for the Web client."""
+
 import datetime
 import urllib.parse
 from typing import Annotated, Any, Literal
@@ -32,12 +33,14 @@ def format_timestamp(
 
 
 def format_date_or_timestamp(
-    date_or_timestamp: datetime.datetime
-    | Annotated[str, "yyyy-MM-ddTHH:mm:ss"]
-    | datetime.date
-    | Literal["today"]
-    | Annotated[str, "yyyy-MM-dd"]
-    | None
+    date_or_timestamp: (
+        datetime.datetime
+        | Annotated[str, "yyyy-MM-ddTHH:mm:ss"]
+        | datetime.date
+        | Literal["today"]
+        | Annotated[str, "yyyy-MM-dd"]
+        | None
+    )
 ):
     """Format a date or timestamp."""
     if date_or_timestamp is None:

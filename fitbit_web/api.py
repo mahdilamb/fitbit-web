@@ -1,4 +1,5 @@
 """Abstract implementations for the Fitbit Web API."""
+
 import abc
 import datetime
 from typing import Annotated, Any, Literal, Union
@@ -15,8 +16,7 @@ class FitbitWebApi(abc.ABC):
         url: str,
         param_kwargs: dict[str, Any] | None = None,
         query_kwargs: dict[str, Any] | None = None,
-    ) -> dict[str, Any]:
-        ...
+    ) -> dict[str, Any]: ...
 
     @abc.abstractmethod
     async def _aget(
@@ -24,9 +24,7 @@ class FitbitWebApi(abc.ABC):
         url: str,
         param_kwargs: dict[str, Any] | None = None,
         query_kwargs: dict[str, Any] | None = None,
-    ) -> dict[str, Any]:
-        ...
-
+    ) -> dict[str, Any]: ...
     def get_azm_by_date_intraday(
         self,
         date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]],
@@ -612,14 +610,16 @@ class FitbitWebApi(abc.ABC):
         self,
         sort: Literal["asc", "desc"],
         limit: int,
-        before_date: Union[
-            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
-        ]
-        | str
-        | None = None,
-        after_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
-        | str
-        | None = None,
+        before_date: (
+            Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+            | str
+            | None
+        ) = None,
+        after_date: (
+            Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+            | str
+            | None
+        ) = None,
         offset: int = 0,
     ):
         """Get Activity Log List.
@@ -1166,14 +1166,16 @@ class FitbitWebApi(abc.ABC):
         self,
         sort: Literal["asc", "desc"],
         limit: int,
-        before_date: Union[
-            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
-        ]
-        | str
-        | None = None,
-        after_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
-        | str
-        | None = None,
+        before_date: (
+            Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+            | str
+            | None
+        ) = None,
+        after_date: (
+            Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+            | str
+            | None
+        ) = None,
         offset: int = 0,
     ):
         """Get ECG Log List.
@@ -1794,14 +1796,16 @@ class FitbitWebApi(abc.ABC):
         self,
         sort: Literal["asc", "desc"],
         limit: int,
-        before_date: Union[
-            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
-        ]
-        | str
-        | None = None,
-        after_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
-        | str
-        | None = None,
+        before_date: (
+            Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+            | str
+            | None
+        ) = None,
+        after_date: (
+            Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+            | str
+            | None
+        ) = None,
         offset: int = 0,
     ):
         """Get Sleep Logs List.
@@ -2672,14 +2676,16 @@ class FitbitWebApi(abc.ABC):
         self,
         sort: Literal["asc", "desc"],
         limit: int,
-        before_date: Union[
-            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
-        ]
-        | str
-        | None = None,
-        after_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
-        | str
-        | None = None,
+        before_date: (
+            Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+            | str
+            | None
+        ) = None,
+        after_date: (
+            Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+            | str
+            | None
+        ) = None,
         offset: int = 0,
     ):
         """Get Activity Log List.
@@ -3228,14 +3234,16 @@ class FitbitWebApi(abc.ABC):
         self,
         sort: Literal["asc", "desc"],
         limit: int,
-        before_date: Union[
-            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
-        ]
-        | str
-        | None = None,
-        after_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
-        | str
-        | None = None,
+        before_date: (
+            Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+            | str
+            | None
+        ) = None,
+        after_date: (
+            Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+            | str
+            | None
+        ) = None,
         offset: int = 0,
     ):
         """Get ECG Log List.
@@ -3858,14 +3866,16 @@ class FitbitWebApi(abc.ABC):
         self,
         sort: Literal["asc", "desc"],
         limit: int,
-        before_date: Union[
-            datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]
-        ]
-        | str
-        | None = None,
-        after_date: Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
-        | str
-        | None = None,
+        before_date: (
+            Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+            | str
+            | None
+        ) = None,
+        after_date: (
+            Union[datetime.date, Literal["today"], Annotated[str, "yyyy-MM-dd"]]
+            | str
+            | None
+        ) = None,
         offset: int = 0,
     ):
         """Get Sleep Logs List.

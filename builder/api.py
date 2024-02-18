@@ -1,4 +1,5 @@
 """Abstract implementations and types for reading the schema."""
+
 from typing import Annotated, Any, Literal, Mapping, Sequence, TypeAlias
 
 import pydantic

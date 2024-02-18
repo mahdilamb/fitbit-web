@@ -1,4 +1,5 @@
 """Implementation of main client."""
+
 from typing import Any
 
 import aiohttp
@@ -9,7 +10,7 @@ try:
 except ModuleNotFoundError:
     import logging
 
-    logger = logging.getLogger()
+    logger = logging.getLogger()  # type: ignore
 
 from fitbit_web import api, auth, utils
 
@@ -22,7 +23,6 @@ class Client(api.FitbitWebApi):
     def __init__(self, tokens: auth.AuthTokens) -> None:
         """Create a client using the given auth tokens."""
         self.__tokens = tokens
-
 
     def _get(
         self,
@@ -42,7 +42,7 @@ class Client(api.FitbitWebApi):
         )
         logger.debug(f"Got status code {response.status_code}")
         if response.status_code == 401:
-            logger.debug(f"Refreshing token...")
+            logger.debug("Refreshing token...")
             self.__tokens = self.__tokens.refresh()
             logger.debug(f"GETting from Fitbit WebAPI: {url}")
             response = requests.get(
@@ -64,11 +64,9 @@ class Client(api.FitbitWebApi):
         param_kwargs: dict[str, Any] | None = None,
         query_kwargs: dict[str, Any] | None = None,
     ):
-
         url = utils.format_url(url, param_kwargs, query_kwargs)
         logger.debug(f"GETting from Fitbit WebAPI: {url}")
         async with aiohttp.ClientSession() as session:
-            
             async with session.get(
                 url,
                 headers={
@@ -79,7 +77,7 @@ class Client(api.FitbitWebApi):
             ) as response:
                 logger.debug(f"Got status code {response.status}")
                 if response.status == 401:
-                    logger.debug(f"Refreshing token...")
+                    logger.debug("Refreshing token...")
                     self.__tokens = self.__tokens.refresh()
                     logger.debug(f"GETting from Fitbit WebAPI: {url}")
                     async with session.get(
