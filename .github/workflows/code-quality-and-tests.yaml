@@ -53,9 +53,9 @@ jobs:
       - name: Check docstrings [pydocstyle]
         if: ${{ always() }}
         run: pydocstyle fitbit_web
-      - name: Check code quality [black]
+      - name: Check code quality [ruff]
         if: ${{ always() }}
-        run: black --check fitbit_web
+        run: ruff check fitbit_web
       - name: Check security [bandit]
         if: ${{ always() }}
         run: bandit -r fitbit_web

@@ -1,4 +1,4 @@
-.PHONY: help tests black isort docstrings format mypy qc api
+.PHONY: help tests ruff isort docstrings format mypy qc api
 default: help
 
 MAIN_PACKAGE_DIRECTORY="fitbit_web"
@@ -7,8 +7,8 @@ PYTHON_SRC_DIRECTORIES=${MAIN_PACKAGE_DIRECTORY} "tests" "builder"
 tests: # Run tests using pytest.
 	pytest --cov=${MAIN_PACKAGE_DIRECTORY} --cov-report term-missing
 
-black: # Format the python files using black.
-	black ${PYTHON_SRC_DIRECTORIES}
+ruff: # Format the python files using ruff.
+	ruff check --fix ${PYTHON_SRC_DIRECTORIES}
 
 isort: # Sort the imports in python files.
 	isort ${PYTHON_SRC_DIRECTORIES}
@@ -19,7 +19,7 @@ bandit: # Run security checks with bandit.
 docstrings:  # Format the docstrings using docformatter
 	docformatter --in-place -r ${PYTHON_SRC_DIRECTORIES};  pydocstyle ${PYTHON_SRC_DIRECTORIES}
 
-format: isort black docstrings # Format the source files with isort and black.
+format: isort ruff docstrings # Format the source files with isort and ruff.
 
 mypy: # Check types with mypy.
 	mypy ${MAIN_PACKAGE_DIRECTORY}

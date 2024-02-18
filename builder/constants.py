@@ -1,4 +1,5 @@
 """Constants to be used by the api builder."""
+
 from types import MappingProxyType
 from typing import Any, Mapping
 

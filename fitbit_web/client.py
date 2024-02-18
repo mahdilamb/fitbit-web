@@ -1,4 +1,5 @@
 """Implementation of main client."""
+
 from typing import Any
 
 import aiohttp
@@ -23,7 +24,6 @@ class Client(api.FitbitWebApi):
         """Create a client using the given auth tokens."""
         self.__tokens = tokens
 
-
     def _get(
         self,
         url: str,
@@ -42,7 +42,7 @@ class Client(api.FitbitWebApi):
         )
         logger.debug(f"Got status code {response.status_code}")
         if response.status_code == 401:
-            logger.debug(f"Refreshing token...")
+            logger.debug("Refreshing token...")
             self.__tokens = self.__tokens.refresh()
             logger.debug(f"GETting from Fitbit WebAPI: {url}")
             response = requests.get(
@@ -68,7 +68,7 @@ class Client(api.FitbitWebApi):
         url = utils.format_url(url, param_kwargs, query_kwargs)
         logger.debug(f"GETting from Fitbit WebAPI: {url}")
         async with aiohttp.ClientSession() as session:
-            
+
             async with session.get(
                 url,
                 headers={
@@ -79,7 +79,7 @@ class Client(api.FitbitWebApi):
             ) as response:
                 logger.debug(f"Got status code {response.status}")
                 if response.status == 401:
-                    logger.debug(f"Refreshing token...")
+                    logger.debug("Refreshing token...")
                     self.__tokens = self.__tokens.refresh()
                     logger.debug(f"GETting from Fitbit WebAPI: {url}")
                     async with session.get(

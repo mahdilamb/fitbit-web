@@ -1,4 +1,5 @@
 """Fitbit WebAPI authorization utilities."""
+
 import base64
 import dataclasses
 import hashlib
