@@ -30,7 +30,7 @@ python-dotenv==1.0.1
     # via fitbit-web (pyproject.toml)
 requests==2.32.0
     # via fitbit-web (pyproject.toml)
-urllib3==2.2.1
+urllib3==2.2.2
     # via requests
 yarl==1.9.4
     # via aiohttp
